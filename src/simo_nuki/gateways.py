@@ -28,8 +28,12 @@ class NukiGatewayHandler(BaseObjectCommandsGatewayHandler):
 
     def handle_nuki_msg(self, msg):
         drop, device_id, topic = msg.topic.split('/')
+        print("MESSAGE TOPIC: ", msg.topic)
         print("MESSAGE PAYLOAD: ", msg.payload)
-        val = json.loads(msg.payload)
+        try:
+            val = json.loads(msg.payload)
+        except:
+            val = msg.payload.decode()
         device, new = NukiDevice.objects.get_or_create(id=device_id)
         properties_map = {
             'deviceType': 'type',
