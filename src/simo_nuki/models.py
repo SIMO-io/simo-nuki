@@ -58,6 +58,7 @@ class NukiDevice(DirtyFieldsMixin, models.Model):
         else:
             device_action(self.id, 'unlock')
 
+    @property
     def components(self):
         return Component.objects.filter(
             gateway__type='NukiDevices', config__nuki_device=self.id
