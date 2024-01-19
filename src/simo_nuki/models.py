@@ -32,13 +32,14 @@ class NukiDevice(DirtyFieldsMixin, models.Model):
         (2, "opener - Nuki Opener"),
         (3, "smartdoor - Nuki Smart Door"),
         (4, "smartlock3 - Nuki Smart Lock 3.0 (Pro)")
-    ))
-    name = models.CharField(max_length=100)
-    firmware_version = models.CharField(max_length=100)
+    ), default=4)
+    name = models.CharField(max_length=100, default='')
+    firmware_version = models.CharField(max_length=100, default='')
 
-    last_state = models.CharField(max_length=50)
+    last_state = models.CharField(max_length=50, default='')
     last_state_data = models.JSONField(default={})
     last_update = models.DateTimeField(auto_now=True)
+
 
     def __str__(self):
         return f'{self.name} ({self.id})'
@@ -57,6 +58,11 @@ class NukiDevice(DirtyFieldsMixin, models.Model):
         else:
             device_action(self.id, 'unlock')
 
+    def components(self):
+        return Component.objects.filter(
+            gateway__type='NukiDevices', config__nuki_device=self.id
+        )
+
 
 Gateway.objects.get_or_create(type='NukiDevices')
 
@@ -70,9 +76,7 @@ def receive_change_to_component(sender, instance, *args, **kwargs):
         elif instance.last_state == 'locked':
             receive_val = True
 
-    for component in Component.objects.filter(
-        gateway__type='NukiDevices', config__nuki_device=instance.id
-    ):
+    for component in instance.components:
         if 'batteryChargeState' in instance.last_state_data \
         and component.battery_level != instance.last_state_data['batteryChargeState']:
             component.battery_level = instance.last_state_data['batteryChargeState']

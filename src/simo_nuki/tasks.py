@@ -111,9 +111,9 @@ def device_action(device_id, action):
         )
 
 
-@celery_app.on_after_finalize.connect
-def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(60 * 60, discover_nuki_bridges.s()) # runs hourly
+# @celery_app.on_after_finalize.connect
+# def setup_periodic_tasks(sender, **kwargs):
+#     sender.add_periodic_task(60 * 60, discover_nuki_bridges.s()) # runs hourly
 
 
 
