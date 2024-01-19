@@ -28,6 +28,7 @@ class NukiGatewayHandler(BaseObjectCommandsGatewayHandler):
 
     def handle_nuki_msg(self, msg):
         drop, device_id, topic = msg.topic.split('/')
+        print("MESSAGE PAYLOAD: ", msg.payload)
         val = json.loads(msg.payload)
         device, new = NukiDevice.objects.get_or_create(id=device_id)
         properties_map = {
