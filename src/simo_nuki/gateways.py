@@ -27,7 +27,7 @@ class NukiGatewayHandler(BaseObjectCommandsGatewayHandler):
             self.mqtt_client.publish(f'nuki/{lock.id}/lockAction', b'2')
 
     def handle_nuki_msg(self, msg):
-        drop, device_id, topic = msg.split('/')
+        drop, device_id, topic = msg.topic.split('/')
         val = json.loads(msg.payload)
         device, new = NukiDevice.objects.get_or_create(id=device_id)
         properties_map = {
