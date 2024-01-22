@@ -85,6 +85,6 @@ class NukiGatewayHandler(BaseObjectCommandsGatewayHandler):
                     value='nuki-' + ','.join(action_items[2:4]),
                     defaults={'user': component.zone.instance.learn_fingerprints}
                 )
-                component.component.change_init_date = timezone.now()
+                component.change_init_date = timezone.now()
                 component.change_init_fingerprint = fingerprint
                 component.save()
