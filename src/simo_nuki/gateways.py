@@ -1,4 +1,5 @@
 import json
+from django.utils import timezone
 from simo.core.gateways import BaseObjectCommandsGatewayHandler
 from simo.core.forms import BaseGatewayForm
 from .models import NukiDevice
@@ -73,9 +74,17 @@ class NukiGatewayHandler(BaseObjectCommandsGatewayHandler):
                 component.save()
             return
 
-
-
-
-
-
-
+        if topic == 'lockActionEvent':
+            action_items = str(val).split(',')
+            # register fingerprint on unlock events only
+            if action_items[0] != '1':
+                return
+            from simo.users.models import Fingerprint
+            for component in device.components:
+                fingerprint, new = Fingerprint.objects.get_or_create(
+                    value='nuki-' + ','.join(action_items[2:4]),
+                    defaults={'user': component.zone.instance.learn_fingerprints}
+                )
+                component.component.change_init_date = timezone.now()
+                component.change_init_fingerprint = fingerprint
+                component.save()
