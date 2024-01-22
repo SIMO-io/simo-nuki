@@ -21,6 +21,7 @@ class NukiGatewayHandler(BaseObjectCommandsGatewayHandler):
 
     def perform_value_send(self, component, value):
         lock = NukiDevice.objects.get(id=component.config['nuki_device'])
+        print(f"Perform {value} delivery to {lock}")
         if value == False:
             self.mqtt_client.publish(f'nuki/{lock.id}/lockAction', b'1')
         elif value == True:
@@ -47,20 +48,23 @@ class NukiGatewayHandler(BaseObjectCommandsGatewayHandler):
 
         if topic == 'state':
             states_map = {
-                0: 'uncalibrated',
+                0: 'fault',
                 1: 'locked',
                 2: 'unlocking',
                 3: 'unlocked',
                 4: 'locking',
-                5: 'unlatched',
-                6: 'unlocked (lock ‘n’ go) ',
-                7: 'unlatching',
-                253: '-',
-                254: 'motor blocked',
-                255: 'undefined',
+                5: 'unlocked',
+                6: 'unlocked',
+                7: 'unlocking',
+                253: 'fault',
+                254: 'fault',
+                255: 'fault',
             }
             device.last_state = states_map.get(val, val)
             device.save()
+            for component in device.components:
+                component.controller._receive_from_device(device.last_state)
+                component.save()
             return
 
         if topic == 'batteryChargeState':

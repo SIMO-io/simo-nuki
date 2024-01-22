@@ -1,7 +1,6 @@
 from simo.core.controllers import Lock
 from .gateways import NukiGatewayHandler
 from .forms import NukiLock
-from .models import NukiDevice
 
 
 class NuckiLock(Lock):
