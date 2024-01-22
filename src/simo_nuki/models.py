@@ -83,7 +83,7 @@ def receive_change_to_component(sender, instance, *args, **kwargs):
             component.battery_level = instance.last_state_data['batteryChargeState']
             component.save(update_fields=['battery_level'])
         if receive_val != None:
-            component.controller._receive_from_device(receive_val)
+            component.set(receive_val)
 
 
 @receiver(post_save, sender=Component)

@@ -63,7 +63,7 @@ class NukiGatewayHandler(BaseObjectCommandsGatewayHandler):
             device.last_state = states_map.get(val, val)
             device.save()
             for component in device.components:
-                component.controller._receive_from_device(device.last_state)
+                component.set(device.last_state)
                 component.save()
             return
 
