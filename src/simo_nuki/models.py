@@ -65,7 +65,7 @@ class NukiDevice(DirtyFieldsMixin, models.Model):
         )
 
 
-Gateway.objects.get_or_create(type='NukiDevices')
+
 
 
 @receiver(post_save, sender=NukiDevice)

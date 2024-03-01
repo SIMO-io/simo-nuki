@@ -1,7 +1,6 @@
-from django.conf.urls import include, url
-from django.urls import path
+from django.urls import include, re_path
 from .views import callback
 
 urlpatterns = [
-    url(r"^callback/$", callback, name='nuki-callback'),
+    re_path(r"^callback/$", callback, name='nuki-callback'),
 ]
